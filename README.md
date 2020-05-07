@@ -6,7 +6,7 @@ This pix2pix model is based on Generative Adversarial Networks (GAN, GANs). I im
 - A first-convolution is duplicated at `SPADE`, so I implemented a mapping network like the StyleGAN. However, it is `Constant-Resolution FCN`, uses `AtrousConvolution`, instead of `FCN` in order not to do down sampling. In addition, each `SPADE` layer resize and share a encoded weight by a mapping network.  
 - I want to assign a hair color, so this Generator has double mapping networks, inputed a segmented label to one mapping network and a RGB color map, to another. The RGB color map has a hair color and positions, it is same resolution with label.  
 - I added `NoiseAdder` like StyleGAN.  
-- I selected a single patch discriminator with `SelfAttention`.  
+- I selected a single patch discriminator with `SelfAttention` instead of `Multi-scale discriminator`.  
 - The discriminator's loss is `Hinge loss` and `Zero Centered Gradient Penalty`.  
 - The generator's loss is `Hinge loss`, `Feature Matching loss` and `Perceptual loss`.  
 
@@ -64,6 +64,9 @@ Python3 train.py --dataset_dir dataset/example
 [8] Qi Mao, Hsin-Ying Lee, Hung-Yu Tseng, Siwei Ma, Ming-Hsuan Yang. Mode Seeking Generative Adversarial Networks for Diverse Image Synthesis. <i>arXiv preprint <a href="https://arxiv.org/abs/1903.05628">arXiv:1903.05628, 2019(v6)</a></i>  
 
 [9] Lars Mescheder, Andreas Geiger, Sebastian Nowozin. Which Training Methods for GANs do actually Converge?. <i>arXiv preprint <a href="https://arxiv.org/abs/1801.04406">arXiv:1801.04406, 2018</a></i>  
+
+[10] Ting-Chun Wang, Ming-Yu Liu, Jun-Yan Zhu, Andrew Tao, Jan Kautz, Bryan Catanzaro. High-Resolution Image Synthesis and Semantic Manipulation with Conditional GANs. <i>arXiv preprint <a href="https://arxiv.org/abs/1711.11585">arXiv:1711.11585, 2018</a></i>  
+
 
 ## Author  
 - pit-ray  

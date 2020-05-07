@@ -22,7 +22,7 @@ The parameters of the upper rusult is almost same as default value of `options.p
 
 ## How to train
 Please create `dataset` directory and prepare dataset. Next, you can set dataset path to option of command.<br>
-Example) <br>
+<br>
 ```  
 Python3 train.py --dataset_dir dataset/example
 ```  
@@ -63,3 +63,7 @@ Python3 train.py --dataset_dir dataset/example
 [8] Qi Mao, Hsin-Ying Lee, Hung-Yu Tseng, Siwei Ma, Ming-Hsuan Yang. Mode Seeking Generative Adversarial Networks for Diverse Image Synthesis. <i>arXiv preprint <a href="https://arxiv.org/abs/1903.05628">arXiv:1903.05628, 2019(v6)</a></i>  
 
 [9] Lars Mescheder, Andreas Geiger, Sebastian Nowozin. Which Training Methods for GANs do actually Converge?. <i>arXiv preprint <a href="https://arxiv.org/abs/1801.04406">arXiv:1801.04406, 2018</a></i>  
+
+## Author  
+- pit-ray  
+[E-mail] contact(at)pit-ray.com

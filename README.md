@@ -3,7 +3,7 @@ This pix2pix model is based on Generative Adversarial Networks (GAN, GANs). I im
 <br>
 
 ## Architecture  
-- A first-convolution is duplicated at `SPADE`, so I implemented a mapping network like the StyleGAN. However, it is `Constant-Resolution FCN`, uses `AtrousConvolution`, instead of `FCN` in order not to do down sampling. In addition, each `SPADE` layer resize and share a encoded weight by a mapping network.  
+- The original `SPADE` computes a weight from label at each itself layers, so this architecture has a mapping network like the StyleGAN and precompute weights. However, it is `Constant-Resolution FCN`, uses `AtrousConvolution`, instead of `FCN` in order not to do down sampling. In addition, each `SPADE` layer resize and share a encoded weight by a mapping network.  
 - I want to assign a hair color, so this Generator has double mapping networks, inputed a segmented label to one mapping network and a RGB color map, to another. The RGB color map has a hair color and positions, it is same resolution with label.  
 - I added `NoiseAdder` like StyleGAN.  
 - I selected a single patch discriminator with `SelfAttention` instead of `Multi-scale discriminator`.  

@@ -67,6 +67,8 @@ Python3 train.py --dataset_dir dataset/example
 
 [10] Ting-Chun Wang, Ming-Yu Liu, Jun-Yan Zhu, Andrew Tao, Jan Kautz, Bryan Catanzaro. High-Resolution Image Synthesis and Semantic Manipulation with Conditional GANs. <i>arXiv preprint <a href="https://arxiv.org/abs/1711.11585">arXiv:1711.11585, 2018</a></i>  
 
+[11] Phillip Isola, Jun-Yan Zhu, Tinghui Zhou, Alexei A. Efros. Image-to-Image Translation with Conditional Adversarial Networks. <i>arXiv preprint <a href="https://arxiv.org/abs/1611.07004">arXiv:1611.07004, 2018</a></i>  
+
 
 ## Author  
 - pit-ray  

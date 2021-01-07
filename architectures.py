@@ -181,7 +181,7 @@ class NoiseAdder(Chain):
     def __call__(self, x, mean=None, ln_var=None):
         xp = cuda.get_array_module(x.array)
         if mean is None and ln_var is None:
-            noise = xp.random.normal(size=(x.shape[0], 1, x.shape[2], x.shape[3]), dtype='float32')
+            noise = xp.random.normal(size=(x.shape[0], 1, x.shape[2], x.shape[3])).astype('float32')
             noise = Variable(noise)
         else:
             noise = F.gaussian(mean, ln_var)

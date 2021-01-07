@@ -1,98 +1,70 @@
-#coding: utf-8
+# coding: utf-8
 import os
-import random
-import sys
-from glob import glob
 
 import chainer
-import chainer.training.extensions as ex
-import cupy as cp
-import cv2
 import numpy as np
-from chainer import Variable, iterators, optimizer_hooks, optimizers, training
-from chainer.backends import cuda
 from PIL import Image
+from glob import glob
 
-from dataset import get_dataset
-from functions import label2onehot, onehot2label
+from functions import label2onehot
 from generator import SPADEGenerator
 from options import get_options
 
 
-def img_save(x, path):
-    img_array = np.transpose(x, (1, 2, 0))
-    img_array = np.uint8(img_array * 255)
-    img = Image.fromarray(img_array)
-    img.save(path)
-
 def main():
-    out_predict_dir = 'out'
-    device = 0
-    gen_npz = 'trained/gen_snapshot_epoch-900.npz'
+    out_dir = 'predict_to'
+    in_dir = 'predict_from'
+    gen_npz = 'pretrained/gen.npz'
 
     opt = get_options()
 
-    opt.spade_ch = 32
-    opt.ngf = 64
-    opt.ndf = 64
-
     gen = SPADEGenerator(opt)
-    gen.to_gpu(device)
+    gen.to_gpu(0)
     chainer.serializers.load_npz(gen_npz, gen)
+    gen.to_cpu()
 
-    os.makedirs(out_predict_dir, exist_ok=True)
-
-    out_dir = out_predict_dir + '/predicted'
+    os.makedirs(in_dir, exist_ok=True)
     os.makedirs(out_dir, exist_ok=True)
+
+    files = glob(in_dir + '/*.*')
+    if len(files) == 0:
+        print('Erorr: No files to load in \'' + in_dir + '\'.')
+        return
+
     num = 0
-
-    dir_path = 'datasets/resnet-large_hc'
-    files = glob(dir_path + '/*.png')
-    random.shuffle(files)
-
-    for img_path in files:
-        if not os.path.exists(img_path):
+    for filename in files:
+        print(filename + ': ', end="")
+        src_img = Image.open(filename).convert('RGB')
+        if src_img is None:
+            print('Not Loaded')
             continue
 
-        img = Image.open(img_path)
+        print('Loaded')
+        src_array = np.array(src_img, dtype='float32')
+        src_array = src_array.transpose((2, 0, 1)) / 255
 
-        if img == None:
-            continue
-        print(img_path)
+        x_array = src_array[:3, :, :256]
+        c_array = src_array[:3, :, 256:512]
 
-        img_array = np.array(img).astype('float32') / 255
-        img_array = np.transpose(img_array, (2, 0, 1))
+        x_onehot = label2onehot(x_array, threshold=0.4, skip_bg=True, dtype='float32')
+        x = chainer.Variable(x_onehot[np.newaxis, :, :, :].astype('float32'))
 
-        t_array = img_array[:3, :, :256]
-        x_array = img_array[:3, :, 256:512]
-        c_array = img_array[:3, :, 512:]
+        c_array = c_array * x_onehot[2]  # crop with hair label
+        c = chainer.Variable(c_array[np.newaxis, :, :, :].astype('float32'))
 
-        #to onehot
-        x_array = label2onehot(x_array, threshold=0.4, skip_bg=True, dtype='float32').astype('float32')
-        c_array = c_array * x_array[2]
+        out = gen([x, c])
 
-        #cast 16bit -> 32bit (cannot use tensor core)
-        x = Variable(cuda.to_gpu(x_array[np.newaxis, :, :, :]))
-        c = Variable(cuda.to_gpu(c_array[np.newaxis, :, :, :]))
+        x_array = np.transpose(x_array, (1, 2, 0))
+        out_array = np.transpose((out.array[0] + 1) / 2, (1, 2, 0))
 
-        out = gen([x, c])[0]
+        img_array = np.concatenate((x_array, out_array), axis=1) * 255
+        img = Image.fromarray(img_array.astype('uint8'))
 
-        out = cp.asnumpy(out.array[0])
-        out= (out + 1) / 2
-        x = cp.asnumpy(x.array[0])
-        x = onehot2label(x, skip_bg=True, dtype='float32')
-
-        out = np.transpose(out * 255, (1, 2, 0)).astype('uint8')
-        x = np.transpose(x * 255, (1, 2, 0)).astype('uint8')
-
-        y = np.transpose(t_array * 255, (1, 2, 0)).astype('uint8')
-
-        out_img = np.concatenate((x, y, out), axis=1)
-        img = Image.fromarray(out_img)
         path = out_dir + '/' + str(num) + '.png'
         img.save(path)
 
         num += 1
+
 
 if __name__ == '__main__':
     main()

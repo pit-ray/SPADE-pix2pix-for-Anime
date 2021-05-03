@@ -8,7 +8,7 @@ This model generates a anime illust from a segmentation label and a color map of
 
 <br> 
 
-## Architecture  
+## The differences from Architecture of GauGAN  
 - The original `SPADE`[1] computes a weight from label at each itself layers, but this architecture has some mapping networks like the StyleGAN[2] and precompute weights. They are called to `Constant-Resolution FCN` used `AtrousConvolution`[6, 7] instead of `FCN`[5] in order not to do down sampling. In addition, each `SPADE` layer resize and share a encoded weight by a mapping network.  
 - I want to assign a hair color, so this Generator has double mapping networks, inputed a segmented label to one mapping network and a RGB color map, to another. The RGB color map has a hair color and positions, it is same resolution with label.  
 - I added `NoiseAdder` of StyleGAN[2].  

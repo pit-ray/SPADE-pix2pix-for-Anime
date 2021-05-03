@@ -2,6 +2,12 @@
 This pix2pix model is based on Generative Adversarial Networks. I implemented in order to generate from a segmentation label to an anime illust. I could not get a satisfactory result, but obtained enough for small and rough datasets.   
 <br>
 
+## Overview
+This model generates a anime illust from a segmentation label and a color map of the hair.  
+<img src="model_overview.png" />
+
+<br> 
+
 ## Architecture  
 - The original `SPADE` computes a weight from label at each itself layers, but this architecture has some mapping networks like the StyleGAN and precompute weights. They are called to `Constant-Resolution FCN` used `AtrousConvolution`, instead of `FCN` in order not to do down sampling. In addition, each `SPADE` layer resize and share a encoded weight by a mapping network.  
 - I want to assign a hair color, so this Generator has double mapping networks, inputed a segmented label to one mapping network and a RGB color map, to another. The RGB color map has a hair color and positions, it is same resolution with label.  

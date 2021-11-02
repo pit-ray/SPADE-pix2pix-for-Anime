@@ -1,7 +1,7 @@
 #coding: utf-8
 from argparse import ArgumentParser
 
-def get_options():
+def get_parser():
     parser = ArgumentParser()
     parser.add_argument('--use_cpu', action='store_true', help='for debug')
 
@@ -60,4 +60,9 @@ def get_options():
     parser.add_argument('--gen_snapshot', type=str, default='', help='trained model path of generator.')
     parser.add_argument('--dis_snapshot', type=str, default='', help='trained model path of discriminator.')
 
+    return parser
+
+
+def get_options():
+    parser = get_parser()
     return parser.parse_args()
